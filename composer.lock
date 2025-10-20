@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c514d8f7b9fc5970bdd94287905ef584",
+    "content-hash": "4c3552b4044c1bb98e1c6d18fd8bbdc6",
     "packages": [
         {
             "name": "brick/math",
@@ -2587,6 +2587,41 @@
                 }
             ],
             "time": "2025-08-21T11:53:16+00:00"
+        },
+        {
+            "name": "phpredis/phpredis",
+            "version": "6.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpredis/phpredis.git",
+                "reference": "04e54f8833efb9504354f1c167eeea3dddf21217"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpredis/phpredis/zipball/04e54f8833efb9504354f1c167eeea3dddf21217",
+                "reference": "04e54f8833efb9504354f1c167eeea3dddf21217",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">= 7.4.0"
+            },
+            "type": "php-ext",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "PHP-3.01"
+            ],
+            "description": "A PHP extension for Redis",
+            "support": {
+                "issues": "https://github.com/phpredis/phpredis/issues",
+                "source": "https://github.com/phpredis/phpredis/tree/6.2.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/michael-grunder",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-03-24T18:30:26+00:00"
         },
         {
             "name": "psr/clock",
