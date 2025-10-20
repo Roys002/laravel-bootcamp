@@ -1,0 +1,98 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: laravel12_app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - laravel
+    depends_on:
+      - db
+      - redis
+
+  nginx:
+    image: nginx:alpine
+    container_name: laravel12_nginx
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+    networks:
+      - laravel
+    depends_on:
+      - app
+
+  db:
+    image: mysql:8.0
+    container_name: laravel12_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: db-laravel-latihan
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: secret
+    ports:
+      - "3309:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - laravel
+    command: --default-authentication-plugin=mysql_native_password
+
+  redis:
+    image: redis:7-alpine
+    container_name: laravel12_redis
+    restart: unless-stopped
+    ports:
+      - "6380:6379"
+    networks:
+      - laravel
+
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: laravel12_queue
+    restart: unless-stopped
+    command: php artisan queue:work --tries=3 --timeout=90 --sleep=3
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    networks:
+      - laravel
+    depends_on:
+      - db
+      - redis
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: laravel12_scheduler
+    restart: unless-stopped
+    command: php artisan schedule:work
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    networks:
+      - laravel
+    depends_on:
+      - db
+      - redis
+
+networks:
+  laravel:
+    driver: bridge
+
+volumes:
+  dbdata:
+    driver: local
