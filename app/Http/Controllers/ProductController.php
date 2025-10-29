@@ -11,10 +11,11 @@ use Illuminate\Http\JsonResponse;
 
 class ProductController extends Controller
 {
-    // Constructor injection (seperti DI di Go)
-    public function __construct(
-        private ProductService $productService // akan dibuat nanti
-    ) {}
+
+    // // Constructor injection (seperti DI di Go)
+    // public function __construct(
+    //     private ProductService $productService // akan dibuat nanti
+    // ) {}
 
     /**
      * Display a listing of products
@@ -23,7 +24,7 @@ class ProductController extends Controller
     public function index(Request $request): JsonResponse
     {
         $perPage = $request->input('per_page', 15);
-        
+
         $products = Product::query()
             ->when($request->filled('search'), function ($query) use ($request) {
                 $query->where('name', 'like', "%{$request->search}%");
