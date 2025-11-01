@@ -21,6 +21,8 @@ const fetchProducts = async (page = 1) => {
         search: searchQuery.value,
       },
     });
+    console.log(response);
+
     products.value = response.data.data;
     pagination.value = response.data.meta;
   } catch (err) {
@@ -63,29 +65,75 @@ onMounted(() => {
 });
 </script>
 
+
 <template>
-  <div class="product-list">
-    <h2>Daftar Produk</h2>
-    <form @submit.prevent="handleSearch" style="margin-bottom: 1rem">
-      <input v-model="searchQuery" type="text" placeholder="Cari produk..." />
-      <button type="submit">Cari</button>
+  <div class="space-y-6">
+    <h2 class="text-2xl font-bold mb-2 text-gray-800">Daftar Produk</h2>
+    <form @submit.prevent="handleSearch" class="flex gap-2 mb-4">
+      <input
+        v-model="searchQuery"
+        type="text"
+        placeholder="Cari produk..."
+        class="border border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-primary"
+      />
+      <button
+        type="submit"
+        class="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark transition-colors"
+      >
+        Cari
+      </button>
     </form>
-    <div v-if="loading">Loading...</div>
-    <div v-if="error" class="error">{{ error }}</div>
-    <div v-for="product in products" :key="product.id" class="product-card">
-      <h3>{{ product.name }}</h3>
-      <p>{{ product.description }}</p>
-      <p>Harga: {{ product.price_formatted }}</p>
-      <p>Stok: {{ product.stock }}</p>
-      <button @click="deleteProduct(product.id)">Hapus</button>
+    <div v-if="loading" class="text-center text-gray-500">Loading...</div>
+    <div
+      v-if="error"
+      class="text-red-600 bg-red-50 border border-red-200 rounded-md p-2 mb-2"
+    >
+      {{ error }}
     </div>
-    <div class="pagination">
+    <div
+      v-if="products.length === 0 && !loading"
+      class="text-center text-gray-500"
+    >
+      Tidak ada produk ditemukan.
+    </div>
+    <div class="grid gap-4">
+      <div
+        v-for="product in products"
+        :key="product.id"
+        class="border rounded-lg p-4 shadow-sm bg-white flex flex-col gap-2"
+      >
+        <div class="flex justify-between items-center">
+          <h3 class="text-lg font-semibold text-gray-800">
+            {{ product.name }}
+          </h3>
+          <button
+            @click="deleteProduct(product.id)"
+            class="text-red-600 hover:text-red-800 px-2 py-1 rounded transition-colors border border-red-100 bg-red-50"
+          >
+            Hapus
+          </button>
+        </div>
+        <p class="text-gray-600">{{ product.description }}</p>
+        <div class="flex gap-4 text-sm">
+          <span class="font-medium text-primary"
+            >Harga: {{ product.price_formatted }}</span
+          >
+          <span class="text-gray-500">Stok: {{ product.stock }}</span>
+        </div>
+      </div>
+    </div>
+    <div v-if="pagination.last_page > 1" class="flex gap-1 justify-center mt-4">
       <button
         v-for="page in pagination.last_page"
         :key="page"
         @click="fetchProducts(page)"
         :disabled="page === currentPage"
-        :style="page === currentPage ? 'font-weight:bold;background:#eee;' : ''"
+        class="px-3 py-1 rounded border text-sm font-medium transition-colors"
+        :class="
+          page === currentPage
+            ? 'bg-primary text-white border-primary'
+            : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'
+        "
       >
         {{ page }}
       </button>
