@@ -49,7 +49,7 @@ services:
     container_name: laravel12_db
     restart: unless-stopped
     environment:
-      MYSQL_DATABASE: db-laravel-latihan
+      MYSQL_DATABASE: db-laravel-bootcamp
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
     ports:
       - "3310:3306"

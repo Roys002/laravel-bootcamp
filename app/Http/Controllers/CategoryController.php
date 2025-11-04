@@ -23,6 +23,9 @@ class CategoriesController extends Controller
             ->when($request->filled('search'), function ($query) use ($request) {
                 $query->where('name', 'like', "%{$request->search}%");
             })
+            ->when($request->filled('description'), function ($query) use ($request) {
+                $query->where('description', 'like', "%{$request->description}%");
+            })
             ->when($request->filled('is_active'), function ($query) use ($request) {
                 $query->where('is_active', $request->is_active);
             })
