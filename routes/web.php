@@ -9,3 +9,8 @@ Route::get('/', function () {
 Route::get('/product', function () {
     return view('product');
 });
+
+// Admin dashboard (Materio)
+Route::get('/admin', function () {
+    return view('content.dashboard.dashboards-analytics');
+})->name('dashboard-analytics');
