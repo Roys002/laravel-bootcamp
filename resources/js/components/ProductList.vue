@@ -1,6 +1,12 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import axios from "axios";
+import Table from "@/components/ui/table/Table.vue";
+import TableHead from "@/components/ui/table/TableHead.vue";
+import TableBody from "@/components/ui/table/TableBody.vue";
+import TableRow from "@/components/ui/table/TableRow.vue";
+import TableCell from "@/components/ui/table/TableCell.vue";
+import Spinner from "@/components/ui/spinner/Spinner.vue";
 
 const products = ref([]);
 const loading = ref(false);
@@ -21,8 +27,6 @@ const fetchProducts = async (page = 1) => {
         search: searchQuery.value,
       },
     });
-    console.log(response);
-
     products.value = response.data.data;
     pagination.value = response.data.meta;
   } catch (err) {
@@ -67,9 +71,9 @@ onMounted(() => {
 
 
 <template>
-  <div class="space-y-6">
+  <div class="space">
     <h2 class="text-2xl font-bold mb-2 text-gray-800">Daftar Produk</h2>
-    <form @submit.prevent="handleSearch" class="flex gap-2 mb-4">
+    <!-- <form @submit.prevent="handleSearch" class="flex gap-2 mb-4">
       <input
         v-model="searchQuery"
         type="text"
@@ -82,8 +86,10 @@ onMounted(() => {
       >
         Cari
       </button>
-    </form>
-    <div v-if="loading" class="text-center text-gray-500">Loading...</div>
+    </form> -->
+    <div v-if="loading" class="flex items-center justify-center min-h-[300px] w-full bg-white rounded-lg shadow-lg">
+      <Spinner class="size-8" />
+    </div>
     <div
       v-if="error"
       class="text-red-600 bg-red-50 border border-red-200 rounded-md p-2 mb-2"
@@ -96,31 +102,36 @@ onMounted(() => {
     >
       Tidak ada produk ditemukan.
     </div>
-    <div class="grid gap-4">
-      <div
-        v-for="product in products"
-        :key="product.id"
-        class="border rounded-lg p-4 shadow-sm bg-white flex flex-col gap-2"
-      >
-        <div class="flex justify-between items-center">
-          <h3 class="text-lg font-semibold text-gray-800">
-            {{ product.name }}
-          </h3>
-          <button
-            @click="deleteProduct(product.id)"
-            class="text-red-600 hover:text-red-800 px-2 py-1 rounded transition-colors border border-red-100 bg-red-50"
-          >
-            Hapus
-          </button>
-        </div>
-        <p class="text-gray-600">{{ product.description }}</p>
-        <div class="flex gap-4 text-sm">
-          <span class="font-medium text-primary"
-            >Harga: {{ product.price_formatted }}</span
-          >
-          <span class="text-gray-500">Stok: {{ product.stock }}</span>
-        </div>
-      </div>
+    <div v-if="!loading"
+      class="w-full mx-auto p-6 bg-white rounded-lg shadow-lg overflow-x-auto"
+    >
+      <Table class="w-full min-w-[700px]">
+        <TableHead>
+          <TableRow>
+            <TableCell>Nama</TableCell>
+            <TableCell>Deskripsi</TableCell>
+            <TableCell>Harga</TableCell>
+            <TableCell>Stok</TableCell>
+            <TableCell>Aksi</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          <TableRow v-for="product in products" :key="product.id">
+            <TableCell>{{ product.name }}</TableCell>
+            <TableCell>{{ product.description }}</TableCell>
+            <TableCell>{{ product.price_formatted }}</TableCell>
+            <TableCell>{{ product.stock }}</TableCell>
+            <TableCell>
+              <button
+                @click="deleteProduct(product.id)"
+                class="text-red-600 hover:text-red-800 px-2 py-1 rounded transition-colors border border-red-100 bg-red-50"
+              >
+                Hapus
+              </button>
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
     </div>
     <div v-if="pagination.last_page > 1" class="flex gap-1 justify-center mt-4">
       <button
